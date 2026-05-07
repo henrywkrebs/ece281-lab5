@@ -21,11 +21,9 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
+use IEEE.NUMERIC_STD.ALL;
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
 --library UNISIM;
@@ -40,8 +38,33 @@ entity ALU is
 end ALU;
 
 architecture Behavioral of ALU is
-
+    signal w_result : STD_LOGIC_VECTOR (7 downto 0);
+    signal w_sum    : STD_LOGIC_VECTOR (8 downto 0);
 begin
 
+    w_sum <= std_logic_vector(signed('0' & i_A) + signed('0' & i_B)) when i_op = "000" else
+             std_logic_vector(signed('0' & i_A) - signed('0' & i_B)) when i_op = "001" else
+             (others => '0');
+
+    w_result <= w_sum(7 downto 0) when (i_op = "000" or i_op = "001") else
+                i_A and i_B        when i_op = "010" else
+                i_A or  i_B        when i_op = "011" else
+                (others => '0');
+
+    o_result <= w_result;
+
+    o_flags(3) <= w_result(7);
+
+    o_flags(2) <= (not i_A(7) and not i_B(7) and w_result(7))
+                  or (i_A(7) and i_B(7) and not w_result(7))
+                  when i_op = "000" else
+                  (not i_A(7) and i_B(7) and w_result(7))
+                  or (i_A(7) and not i_B(7) and not w_result(7))
+                  when i_op = "001" else
+                  '0';
+
+    o_flags(1) <= w_sum(8) when (i_op = "000" or i_op = "001") else '0';
+
+    o_flags(0) <= '1' when w_result = "00000000" else '0';
 
 end Behavioral;
