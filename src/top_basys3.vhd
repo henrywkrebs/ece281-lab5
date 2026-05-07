@@ -1,4 +1,4 @@
---+----------------------------------------------------------------------------
+
 --|
 --| NAMING CONVENSIONS :
 --|
@@ -119,7 +119,7 @@ architecture top_basys3_arch of top_basys3 is
     signal w_tdm_sel   : std_logic_vector(3 downto 0);
     signal w_D3        : std_logic_vector(3 downto 0);
     signal w_seg       : std_logic_vector(6 downto 0);
-    signal w_btnC_d    : std_logic := '0';
+    
   
 begin
 	-- PORT MAPS ----------------------------------------
@@ -179,14 +179,12 @@ begin
 
 	-- CONCURRENT STATEMENTS ----------------------------
 
-    reg_A : process(clk, btnU)
+   reg_A : process(clk, btnU)
     begin
         if btnU = '1' then
-            w_reg_A  <= (others => '0');
-            w_btnC_d <= '0';
+            w_reg_A <= (others => '0');
         elsif rising_edge(clk) then
-            w_btnC_d <= btnC;
-            if btnC = '1' and w_btnC_d = '0' and w_cycle = "0010" then
+            if w_cycle = "0001" then
                 w_reg_A <= sw;
             end if;
         end if;
@@ -197,7 +195,7 @@ begin
         if btnU = '1' then
             w_reg_B <= (others => '0');
         elsif rising_edge(clk) then
-            if btnC = '1' and w_btnC_d = '0' and w_cycle = "0100" then
+            if w_cycle = "0010" then
                 w_reg_B <= sw;
             end if;
         end if;
@@ -205,12 +203,14 @@ begin
 
     w_D3 <= "1010" when w_sign = '1' else "1111";
 
-    w_display <= sw       when w_cycle = "0010" else
-                 sw       when w_cycle = "0100" else
+    w_display <= w_reg_A  when w_cycle = "0010" else
+                 w_reg_B  when w_cycle = "0100" else
                  w_result when w_cycle = "1000" else
                  (others => '0');
 
-    seg <= "0111111" when (w_sign = '1' and w_tdm_sel = "0111") else w_seg;
+    seg <= "0111111" when (w_sign = '1' and w_tdm_sel = "0111") else
+       "1111111" when (w_tdm_sel = "0111" or w_tdm_sel = "1011") else
+       w_seg;
 
     an  <= "1111" when w_cycle = "0001" else w_tdm_sel;
 
