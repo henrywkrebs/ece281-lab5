@@ -62,15 +62,5 @@ begin
                 "1000111" when x"F",
                 "0000000" when others;
         
-    -- Flipped mapping to o_seg_n to match constraints file
-    -- Invert w_seg because the cathodes are active LOW
-    o_seg_n(0) <= not w_seg(6); -- Sa
-    o_seg_n(1) <= not w_seg(5); -- Sb
-    o_seg_n(2) <= not w_seg(4); -- Sc
-    o_seg_n(3) <= not w_seg(3); -- Sd
-    o_seg_n(4) <= not w_seg(2); -- Se
-    o_seg_n(5) <= not w_seg(1); -- Sf
-    o_seg_n(6) <= not w_seg(0); -- Sg
-
-
+    
 end Behavioral;
