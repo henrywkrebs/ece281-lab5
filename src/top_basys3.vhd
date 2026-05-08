@@ -99,9 +99,10 @@ architecture top_basys3_arch of top_basys3 is
 
     component sevenseg_decoder is
         port (
-            i_Hex   : in  std_logic_vector(3 downto 0);
-            o_seg_n : out std_logic_vector(6 downto 0)
+            i_hex : in  std_logic_vector(3 downto 0);
+            o_seg : out std_logic_vector(6 downto 0)
         );
+    
     end component;
 
     signal w_clk_slow  : std_logic;
@@ -173,8 +174,8 @@ begin
 
     sevenseg_inst : sevenseg_decoder
         port map (
-            i_Hex   => w_tdm_data,
-            o_seg_n => w_seg
+            i_hex => w_tdm_data,
+            o_seg => w_seg
         );
 
 	-- CONCURRENT STATEMENTS ----------------------------
